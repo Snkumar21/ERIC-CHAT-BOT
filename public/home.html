@@ -8,16 +8,20 @@
     <script defer src="script.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
+
 <body>
     <!-- Navbar -->
     <nav class="navbar">
         <div class="logo">🤖 ERIC ChatBot</div>
         <div class="nav-links">
-            <a href="#">Home</a>
-            <a href="#">Features</a>
-            <a href="#">About</a>
-            <a href="#">Contact</a>
-            <button class="login-btn" onclick="window.location.href='login.html'">Login</button>
+            <a href="home.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+
+            <!-- User Info -->
+            <span id="user-name" class="user-name"></span>
+            <button class="logout-btn" id="logout-btn" style="display:none;">Logout</button>
+            <button class="login-btn" id="login-btn" onclick="window.location.href='login.html'">Login</button>
         </div>
     </nav>
 
@@ -35,7 +39,7 @@
 
         <div class="input-area">
             <input type="text" id="user-input" placeholder="Type your message..." />
-            <button id="send-btn" name="send-btn"><i class="fas fa-paper-plane"></i></button>
+            <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
         </div>
     </section>
 

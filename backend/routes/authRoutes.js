@@ -3,9 +3,9 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const router = express.Router();
 
-// =============================
+// =====================
 // REGISTER ROUTE
-// =============================
+// =====================
 router.post("/register", async (req, res) => {
   try {
     const { name, phone, email, password } = req.body;
@@ -36,27 +36,31 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// =============================
+// =====================
 // LOGIN ROUTE
-// =============================
+// =====================
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Validate input
     if (!email || !password) {
       return res.status(400).json({ message: "All fields are required!" });
     }
 
+    // Check user existence
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "User not found!" });
+      return res.status(400).json({ message: "User not found! Please register first." });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(400).json({ message: "Invalid email or password!" });
+    // Compare passwords
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid password! Please try again." });
     }
 
+    // On successful login
     res.status(200).json({
       message: "Login successful!",
       user: {

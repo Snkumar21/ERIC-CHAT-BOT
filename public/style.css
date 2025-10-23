@@ -41,8 +41,12 @@ body {
   color: #00bcd4;
 }
 
+.user-name {
+  margin-left: 20px;
+}
+
 /* ====== Login Button ====== */
-.login-btn {
+.login-btn, .logout-btn {
   background-color: #00bcd4;
   color: white;
   border: none;
@@ -55,7 +59,7 @@ body {
   transition: 0.3s ease;
 }
 
-.login-btn:hover {
+.login-btn, .logout-btn:hover {
   background-color: #0097a7;
   transform: scale(1.05);
   box-shadow: 0 0 8px rgba(0, 188, 212, 0.5);

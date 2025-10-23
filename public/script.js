@@ -1,7 +1,30 @@
+// === Chat Elements ===
 const sendBtn = document.getElementById('send-btn');
 const userInput = document.getElementById('user-input');
 const chatBox = document.getElementById('chat-box');
 
+// === User Info Elements ===
+const loginBtn = document.getElementById('login-btn');
+const logoutBtn = document.getElementById('logout-btn');
+const userNameDisplay = document.getElementById('user-name');
+
+// === Handle Logged In User ===
+const loggedUser = JSON.parse(localStorage.getItem("ericUser"));
+
+if (loggedUser) {
+  // Hide login, show logout
+  loginBtn.style.display = "none";
+  logoutBtn.style.display = "inline-block";
+  userNameDisplay.textContent = `${loggedUser.name}`;
+}
+
+// === Logout Functionality ===
+logoutBtn.addEventListener("click", () => {
+  localStorage.removeItem("ericUser");
+  window.location.href = "index.html";
+});
+
+// === Chat Functions ===
 sendBtn.addEventListener('click', sendMessage);
 userInput.addEventListener('keypress', e => {
   if (e.key === 'Enter') sendMessage();
@@ -34,7 +57,7 @@ function appendMessage(text, type) {
 function showTypingAnimation() {
   const div = document.createElement('div');
   div.classList.add('bot-message');
-  div.setAttribute('id', 'typing');
+  div.id = 'typing';
   div.innerHTML = '<span class="dots">Typing<span>.</span><span>.</span><span>.</span></span>';
   chatBox.appendChild(div);
   chatBox.scrollTop = chatBox.scrollHeight;
@@ -46,11 +69,18 @@ function removeTypingAnimation() {
 }
 
 function generateBotReply(userMsg) {
-  let reply = "I'm not sure about that, but soon I’ll learn from my dataset! 🤖";
-  
-  if (userMsg.toLowerCase().includes('hello'||'hi'||'hey')) reply = "Hi there! How are you today?";
-  if (userMsg.toLowerCase().includes('your name')) reply = "I'm Eric — your personal AI assistant.";
-  if (userMsg.toLowerCase().includes('bye')) reply = "Goodbye! Have a great day 🌟";
+  const msg = userMsg.toLowerCase();
+  let reply = "I'm not sure about that, but I’ll keep learning! 🤖";
+
+  if (msg.includes('hello') || msg.includes('hi') || msg.includes('hey')) {
+    reply = "Hi there! How are you today?";
+  } else if (msg.includes('your name')) {
+    reply = "I'm Eric — your personal AI assistant.";
+  } else if (msg.includes('help')) {
+    reply = "Sure! You can ask me about programming, AI, or just chat casually. 😊";
+  } else if (msg.includes('bye')) {
+    reply = "Goodbye! Have a great day 🌟";
+  }
 
   appendMessage(reply, 'bot');
 }
