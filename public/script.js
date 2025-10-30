@@ -49,6 +49,7 @@ function sendMessage() {
   }, 300);
 }
 
+// === Append Message to Chat ===
 function appendMessage(text, type) {
   const div = document.createElement('div');
   div.classList.add(`${type}-message`);
@@ -57,6 +58,7 @@ function appendMessage(text, type) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+// === Typing Animation ===
 function showTypingAnimation() {
   const div = document.createElement('div');
   div.classList.add('bot-message');
@@ -69,6 +71,21 @@ function showTypingAnimation() {
 function removeTypingAnimation() {
   const typing = document.getElementById('typing');
   if (typing) typing.remove();
+}
+
+// === Save Chat to MongoDB (Backend API) ===
+function saveChatToDB(question, answer) {
+  const loggedUser = JSON.parse(localStorage.getItem("ericUser"));
+  const userId = loggedUser ? loggedUser._id : null;
+
+  fetch("http://localhost:5000/api/chat/search", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId, question, answer }),
+  })
+    .then(res => res.json())
+    .then(data => console.log("✅ Chat saved:", data))
+    .catch(err => console.error("❌ Error saving chat:", err));
 }
 
 // === Enhanced Bot Logic ===
@@ -154,8 +171,10 @@ function generateBotReply(userMsg) {
     reply = generateFriendlyFallback(msg);
   }
 
+  // Append bot reply to chat and save to DB
   appendMessage(reply, 'bot');
   chatMemory.push({ sender: 'bot', text: reply });
+  saveChatToDB(userMsg, reply);
 }
 
 // === Friendly fallback generator ===
