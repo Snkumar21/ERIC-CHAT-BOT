@@ -2,6 +2,7 @@
 const sendBtn = document.getElementById('send-btn');
 const userInput = document.getElementById('user-input');
 const chatBox = document.getElementById('chat-box');
+const micBtn = document.getElementById('mic-btn'); // 🎤 Mic button
 
 // === User Info Elements ===
 const loginBtn = document.getElementById('login-btn');
@@ -54,6 +55,17 @@ function appendMessage(text, type) {
   const div = document.createElement('div');
   div.classList.add(`${type}-message`);
   div.textContent = text;
+
+  // Add a 🔊 TTS speak button for bot replies
+  if (type === 'bot') {
+    const speakBtn = document.createElement('button');
+    speakBtn.classList.add('speak-btn');
+    speakBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+    speakBtn.title = "Read aloud";
+    speakBtn.onclick = () => speakText(text);
+    div.appendChild(speakBtn);
+  }
+
   chatBox.appendChild(div);
   chatBox.scrollTop = chatBox.scrollHeight;
 }
@@ -78,7 +90,7 @@ function saveChatToDB(question, answer) {
   const loggedUser = JSON.parse(localStorage.getItem("ericUser"));
   const userId = loggedUser ? loggedUser._id : null;
 
-  fetch("http://localhost:5000/api/chat/search", {
+  fetch("http://localhost:5000/api/chat/save", {   // ✅ corrected endpoint
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId, question, answer }),
@@ -171,9 +183,10 @@ function generateBotReply(userMsg) {
     reply = generateFriendlyFallback(msg);
   }
 
-  // Append bot reply to chat and save to DB
+  // Append bot reply to chat, speak, and save to DB
   appendMessage(reply, 'bot');
   chatMemory.push({ sender: 'bot', text: reply });
+  speakText(reply);
   saveChatToDB(userMsg, reply);
 }
 
@@ -186,4 +199,58 @@ function generateFriendlyFallback(msg) {
     "I love your curiosity! Can you rephrase that question for me?"
   ];
   return responses[Math.floor(Math.random() * responses.length)];
+}
+
+// === Text-to-Speech (TTS) ===
+function speakText(text) {
+  if (!window.speechSynthesis) return alert("Sorry, your browser doesn't support text-to-speech.");
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = 1;
+  utterance.pitch = 1;
+  utterance.volume = 1;
+  utterance.voice = window.speechSynthesis.getVoices().find(v => v.name.includes("Google") || v.lang === "en-US");
+  window.speechSynthesis.speak(utterance);
+}
+
+// === Speech-to-Text (Mic) ===
+let isListening = false;
+
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = new SpeechRecognition();
+  recognition.lang = 'en-US';
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  micBtn.addEventListener('click', () => {
+    if (!isListening) {
+      recognition.start();
+      micBtn.classList.add('listening');
+      isListening = true;
+    } else {
+      recognition.stop();
+      micBtn.classList.remove('listening');
+      isListening = false;
+    }
+  });
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    userInput.value = transcript;
+    sendMessage(); // Auto-send after speaking
+  };
+
+  recognition.onerror = (event) => {
+    console.error('🎤 Speech recognition error:', event.error);
+    micBtn.classList.remove('listening');
+    isListening = false;
+  };
+
+  recognition.onend = () => {
+    micBtn.classList.remove('listening');
+    isListening = false;
+  };
+} else {
+  micBtn.disabled = true;
+  micBtn.title = "Speech recognition not supported in this browser";
 }
