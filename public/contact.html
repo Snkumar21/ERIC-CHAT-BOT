@@ -117,6 +117,39 @@
             .container{ grid-template-columns:1fr; padding:20px; }
             header h1{ font-size:18px; }
         }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(-10px); }
+            10% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(-10px); }
+        }
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 10px;
+            color: var(--text); /* white text */
+            outline: none;
+            font-size: 14px;
+            -moz-appearance: none; /* hides default arrow in Chrome/Safari */
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='14' viewBox='0 0 24 24' width='14' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 14px;
+            cursor: pointer;
+        }
+        /* When dropdown is open (Firefox, Chrome) */
+        select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(59,130,246,0.3);
+        }
+        /* Dropdown options */
+        option {
+            background-color: #0b1220;
+            color: #e6eef8;
+        }
     </style>
 </head>
 <body>
@@ -127,8 +160,7 @@
                 <p>Send a message and we'll get back to you within 1–2 business days. Use this form for feedback, bug reports, or partnership inquiries.</p>
             </header>
 
-            <form id="contactForm" method="post" action="/contact" novalidate>
-                <!-- Honeypot for bots (keep visually hidden) -->
+            <form id="contactForm" novalidate>
                 <label class="hidden" for="website">Leave this field empty</label>
                 <input class="hidden" type="text" id="website" name="website" autocomplete="off" tabindex="-1" />
 
@@ -162,8 +194,8 @@
                         </select>
                     </div>
                     <div class="col">
-                        <label for="phone">Phone (optional)</label>
-                        <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+1 (555) 123-4567" />
+                        <label for="phone">Phone Number</label>
+                        <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+91 999-888-4567" />
                     </div>
                 </div>
 
@@ -277,5 +309,60 @@
             }, { passive: false });
         })();
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script>
+        (function() {
+            emailjs.init("HUNMCLsYwZz37pxsQ");
+
+            const form = document.getElementById('contactForm');
+            const sendBtn = document.getElementById('sendBtn');
+            const status = document.getElementById('status');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault(); // Prevent default POST request to /api/contact
+                sendBtn.disabled = true;
+                status.textContent = "Sending...";
+
+                emailjs.sendForm('service_eoolbcf', 'template_y4x9k4b', form)
+                    .then(() => {
+                        showAlert("✅ Message sent successfully!");
+                        form.reset();
+                        status.textContent = "";
+                    })
+                    .catch((error) => {
+                        console.error("EmailJS error:", error);
+                        showAlert("❌ Failed to send message. Please try again.", true);
+                        status.textContent = "";
+                    })
+                    .finally(() => {
+                        sendBtn.disabled = false;
+                    });
+            });
+
+            // Custom alert box
+            function showAlert(message, isError = false) {
+                const alertBox = document.getElementById("alertBox");
+                alertBox.style.backgroundColor = isError ? "#f44336" : "#00bcd4";
+                alertBox.textContent = message;
+                alertBox.style.display = "block";
+                setTimeout(() => alertBox.style.display = "none", 3000);
+            }
+        })();
+    </script>
+    <div id="alertBox" style="
+        display:none;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #00bcd4;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        z-index: 9999;
+        font-family: system-ui, sans-serif;
+        font-size: 14px;
+        animation: fadeInOut 3s ease forwards;
+    "></div>
 </body>
 </html>
