@@ -90,7 +90,7 @@ function saveChatToDB(question, answer) {
   const loggedUser = JSON.parse(localStorage.getItem("ericUser"));
   const userId = loggedUser ? loggedUser._id : null;
 
-  fetch("http://localhost:5000/api/chat/save", {   // ✅ corrected endpoint
+  fetch("https://eric-chat-bot.onrender.com/api/chat/save", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId, question, answer }),
