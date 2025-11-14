@@ -30,6 +30,11 @@ body {
   color: #00bcd4;
 }
 
+.nav-links {
+  display: flex;
+  align-items: center;
+}
+
 .nav-links a {
   color: #fff;
   text-decoration: none;
@@ -59,10 +64,18 @@ body {
   transition: 0.3s ease;
 }
 
-.login-btn, .logout-btn:hover {
+.login-btn:hover, .logout-btn:hover {
   background-color: #0097a7;
   transform: scale(1.05);
   box-shadow: 0 0 8px rgba(0, 188, 212, 0.5);
+}
+
+/* ====== Hamburger Menu ====== */
+.hamburger {
+  display: none;
+  font-size: 26px;
+  cursor: pointer;
+  color: #fff;
 }
 
 /* ====== Hero Section ====== */
@@ -190,24 +203,9 @@ body {
   transform: scale(1.1);
 }
 
-/* Mic active state */
 #mic-btn.listening {
   background: #ff4081;
 }
-
-/* Bot speak button inside chat message */
-.speak-btn {
-  background: none;
-  border: none;
-  color: #00bcd4;
-  margin-left: 8px;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-.speak-btn:hover {
-  color: #0097a7;
-}
-
 
 /* ====== Footer ====== */
 footer {
@@ -216,4 +214,105 @@ footer {
   background: rgba(0, 0, 0, 0.2);
   font-size: 0.9rem;
   color: #ccc;
+}
+
+
+
+/* ========================================================= */
+/*                📱 MOBILE RESPONSIVE SECTION               */
+/* ========================================================= */
+
+@media (max-width: 900px) {
+  .hero h1 {
+    font-size: 2.3rem;
+  }
+}
+
+@media (max-width: 768px) {
+
+  /* --- Navbar Responsive --- */
+  .navbar {
+    padding: 15px 20px;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    right: 0;
+    width: 180px;
+    background: rgba(0,0,0,0.5);
+    padding: 20px;
+    border-radius: 10px;
+    backdrop-filter: blur(8px);
+  }
+
+  .nav-links a {
+    margin: 12px 0;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .nav-links.show {
+    display: flex;
+  }
+
+  /* --- Hero Section --- */
+  .hero h1 {
+    font-size: 2rem;
+  }
+  .hero p {
+    font-size: 0.9rem;
+  }
+
+  /* --- Chat Box --- */
+  .chat-box {
+    max-width: 90%;
+    height: 350px;
+    padding: 15px;
+  }
+
+  /* --- Input Area --- */
+  .input-area {
+    width: 90%;
+  }
+
+  #user-input {
+    font-size: 14px;
+  }
+
+  .input-area button {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .navbar {
+    padding: 12px 15px;
+  }
+
+  .logo {
+    font-size: 1.2rem;
+  }
+
+  .chat-box {
+    height: 300px;
+  }
+
+  .hero h1 {
+    font-size: 1.7rem;
+  }
+
+  .hero p {
+    font-size: 0.85rem;
+  }
+
+  #user-input {
+    padding: 10px;
+  }
 }
