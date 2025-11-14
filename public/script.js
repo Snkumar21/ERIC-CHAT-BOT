@@ -2,7 +2,7 @@
 const sendBtn = document.getElementById('send-btn');
 const userInput = document.getElementById('user-input');
 const chatBox = document.getElementById('chat-box');
-const micBtn = document.getElementById('mic-btn'); // 🎤 Mic button
+const micBtn = document.getElementById('mic-btn');
 
 // === User Info Elements ===
 const loginBtn = document.getElementById('login-btn');
@@ -39,6 +39,11 @@ function sendMessage() {
 
   appendMessage(message, 'user');
   chatMemory.push({ sender: 'user', text: message });
+
+  if (message.toLowerCase().startsWith("search ")) {
+    const term = message.substring(7);
+    return searchChatHistory(term);
+  }
   userInput.value = '';
 
   setTimeout(() => {
@@ -98,6 +103,34 @@ function saveChatToDB(question, answer) {
     .then(res => res.json())
     .then(data => console.log("✅ Chat saved:", data))
     .catch(err => console.error("❌ Error saving chat:", err));
+}
+
+// === Search Chat History from MongoDB ===
+function searchChatHistory(query) {
+  if (!query.trim()) return;
+
+  const loggedUser = JSON.parse(localStorage.getItem("ericUser"));
+  const userId = loggedUser ? loggedUser._id : null;
+
+  fetch(`https://eric-chat-bot.onrender.com/api/chat/search?userId=${userId}&query=${encodeURIComponent(query)}`)
+    .then(res => res.json())
+    .then(data => {
+      // Show search results inside chat window
+      appendMessage(`🔍 Search results for: "${query}"`, "bot");
+
+      if (!data.results || data.results.length === 0) {
+        appendMessage("No matching chat history found ❌", "bot");
+        return;
+      }
+
+      data.results.forEach(item => {
+        appendMessage(`💬 You: ${item.question}\n🤖 Eric: ${item.answer}`, "bot");
+      });
+    })
+    .catch(err => {
+      console.error("❌ Search error:", err);
+      appendMessage("⚠ Unable to search history. Server error.", "bot");
+    });
 }
 
 // === Enhanced Bot Logic ===
