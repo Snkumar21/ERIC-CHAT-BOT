@@ -1,3 +1,11 @@
+// --- Nav Bar Visibility ---
+const hamburger = document.getElementById("hamburger");
+const navLinks = document.getElementById("nav-links");
+
+hamburger.addEventListener("click", () => {
+  navLinks.classList.toggle("show");
+});
+
 // === Chat Elements ===
 const sendBtn = document.getElementById('send-btn');
 const userInput = document.getElementById('user-input');
@@ -15,7 +23,7 @@ const loggedUser = JSON.parse(localStorage.getItem("ericUser"));
 if (loggedUser) {
   loginBtn.style.display = "none";
   logoutBtn.style.display = "inline-block";
-  userNameDisplay.textContent = `👋 ${loggedUser.name}`;
+  userNameDisplay.textContent = `${loggedUser.name}`;
 }
 
 // === Logout Functionality ===

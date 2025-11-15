@@ -6,6 +6,7 @@
     <title>About - ERIC ChatBot</title>
     <link rel="stylesheet" href="style.css" />
     <script defer src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js" defer></script>
     <style>
         main {
             max-width: 900px;
@@ -169,13 +170,21 @@
     <!-- Navbar -->
     <nav class="navbar">
         <div class="logo">🤖 ERIC ChatBot</div>
-        <div class="nav-links">
-        <a href="home.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="contact.html">Contact</a>
-        <span id="user-name" class="user-name"></span>
-        <button class="logout-btn" id="logout-btn" style="display:none;">Logout</button>
-        <button class="login-btn" id="login-btn" onclick="window.location.href='login.html'">Login</button>
+
+        <!-- Hamburger Icon (Mobile Only) -->
+        <div class="hamburger" id="hamburger">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+
+        <div class="nav-links" id="nav-links">
+            <a href="home.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+
+            <span id="user-name" class="user-name"></span>
+
+            <button class="logout-btn" id="logout-btn" style="display:none;">Logout</button>
+            <button class="login-btn" id="login-btn" onclick="window.location.href='login.html'">Login</button>
         </div>
     </nav>
 
